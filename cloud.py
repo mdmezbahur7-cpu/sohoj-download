@@ -139,7 +139,7 @@ def run_job(jid):
     if job['mode'] == 'audio':
         args += ['-f', 'bestaudio/best', '-x', '--audio-format', 'mp3', '--audio-quality', job['quality']+'K']
     else:
-        limit = '[height<=1080]' if job['quality'] == 'best' else '[height<='+job['quality']+']'
+        limit = '[height<=?1080]' if job['quality'] == 'best' else '[height<=?'+job['quality']+']'
         args += ['-f', f'bv*{limit}+ba/b{limit}', '--merge-output-format', 'mp4/mkv']
     args += ['--', job['url']]
     process = None

@@ -88,6 +88,11 @@ class CloudTests(unittest.TestCase):
         from yt_dlp import parse_options
         options=parse_options(args[3:])
         self.assertEqual(options.ydl_opts['proxy'],cloud.PROXY_URL)
+    def test_unknown_height_direct_media_is_selectable(self):
+        from yt_dlp import YoutubeDL
+        with YoutubeDL({'format':'bv*[height<=?480]+ba/b[height<=?480]', 'quiet':True}) as ydl:
+            info=ydl.process_ie_result({'id':'sample','title':'sample','url':'https://example.org/sample.mp4','ext':'mp4'},download=False)
+        self.assertEqual(info['ext'],'mp4')
     def test_failed_job_cleans_partial_media(self):
         jid=self.job('owner');folder=cloud.DATA/jid;folder.mkdir();(folder/'x.part').write_text('partial')
         process=Mock();process.stdout=io.StringIO('ERROR: This media requires login\n');process.wait.return_value=1;process.poll.return_value=0
