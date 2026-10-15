@@ -1,6 +1,7 @@
 """Sohoj Download — small public deployment, one Gunicorn worker only."""
 import atexit
 import importlib.util
+import ipaddress
 import json
 import os
 import re
@@ -63,8 +64,19 @@ def validate_url(value):
     host = (parsed.hostname or '').lower().rstrip('.')
     if parsed.scheme != 'https' or parsed.username or parsed.password or parsed.port not in (None, 443):
         raise ValueError('Use a public HTTPS video or audio link.')
-    if not any(host == d or host.endswith('.'+d) for d in DOMAINS):
-        raise ValueError('This source is not supported. Paste a link from one of the listed social platforms.')
+    social = any(host == d or host.endswith('.'+d) for d in DOMAINS)
+    direct = Path(parsed.path.lower()).suffix in ('.mp4','.webm','.mov','.mkv','.mp3','.m4a','.ogg','.wav')
+    if not social and not direct:
+        raise ValueError('Paste a supported social-media link or a direct audio/video file link.')
+    if not host or '.' not in host or host.endswith(('.local','.internal')):
+        raise ValueError('Use a public media source.')
+    try:
+        address = ipaddress.ip_address(host)
+    except ValueError:
+        pass
+    else:
+        if not address.is_global:
+            raise ValueError('Private network destinations are blocked.')
     if any(ord(c) < 32 for c in value):
         raise ValueError('Invalid media URL.')
     return value

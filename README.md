@@ -20,6 +20,7 @@ No payment method or paid plan should be selected without the owner's approval. 
 - Job directory budget approximately 512 MB, total temporary media budget 1 GB, processing timeout 15 minutes. A watchdog checks storage every 2 seconds, so the budget can briefly overshoot. FFmpeg temporary/merged files count toward the budget.
 - Up to 1080p video, MP4 when possible, MKV fallback for incompatible streams. MP3 output supports 128/192/320 kbps. The source must offer the requested quality.
 - No paid subscription or daily application quota. Host bandwidth/compute policies and source platform rate limits apply. Free services may sleep after inactivity and take time to restart.
+- Direct public HTTPS media-file links are supported (MP4, WebM, MOV, MKV, MP3, M4A, OGG, WAV). The same guarded proxy is used.
 - Public input platforms: YouTube, Facebook, Instagram, TikTok, X/Twitter, Vimeo, Dailymotion, Reddit, Twitch, Pinterest, SoundCloud, Bandcamp, Bilibili and listed short-link domains.
 - Not every URL works. Platforms may block data-center IPs, require authentication or change their interfaces. No DRM/paywall/private-account bypass, cookies, playlists, livestreams or account credential collection.
 
@@ -39,3 +40,7 @@ Run `python -m unittest -v test_cloud.py` and `node --check web/app.js`.
 Tests cover source validation, DNS/network blocking, DNS pinning, browser isolation, CSRF/request size checks, queue/cancellation, download result handling, option parsing against installed yt-dlp, and failed-job cleanup. Extraction subprocesses are mocked in unit tests. An actual end-to-end platform download must be tested on the deployed host.
 
 The Dockerfile bundles FFmpeg and Deno. Dependency versions in requirements.lock.txt match the tested environment. Update the lock intentionally when platform extractor fixes are needed, then redeploy.
+
+## Test sample
+
+`tests/fixtures/sample.mp4` is a two-second solid orange frame with a synthetic sine-wave tone generated for this app. The Try a sample button fills its public GitHub raw URL; pressing Start download exercises the real download engine.

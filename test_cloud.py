@@ -39,6 +39,8 @@ class CloudTests(unittest.TestCase):
             with self.assertRaises(ValueError):
                 cloud.validate_url(url)
         self.assertEqual(cloud.validate_url('https://youtu.be/test'),'https://youtu.be/test')
+        self.assertEqual(cloud.validate_url('https://example.org/clip.mp4'),'https://example.org/clip.mp4')
+        with self.assertRaises(ValueError): cloud.validate_url('https://127.0.0.1/clip.mp4')
     def test_proxy_blocks_private_dns_before_connection(self):
         for ip in ['127.0.0.1','10.0.0.2','169.254.169.254','::1','192.168.1.1']:
             with patch.object(egress.socket,'getaddrinfo', return_value=[(socket.AF_INET,socket.SOCK_STREAM,0,'',(ip,443))]):
